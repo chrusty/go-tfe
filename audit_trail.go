@@ -37,8 +37,14 @@ type AuditTrail struct {
 
 // AuditTrailList represents a list of audit trails.
 type AuditTrailList struct {
-	*Pagination `json:"pagination"`
-	Data        []*AuditTrail `json:"data"`
+	Pagination struct {
+		CurrentPage  int `json:"current_page"`
+		PreviousPage int `json:"prev_page"`
+		NextPage     int `json:"next_page"`
+		TotalPages   int `json:"total_pages"`
+		TotalCount   int `json:"total_count"`
+	}
+	Data []*AuditTrail `json:"data"`
 }
 
 // AuditTrailAuthType represents tye types of audit trail auth.
@@ -95,7 +101,7 @@ func (s *auditTrails) List(ctx context.Context, options AuditTrailListOptions) (
 		return nil, err
 	}
 
-	auditTrailList := &AuditTrailList{}
+	auditTrailList := new(AuditTrailList)
 	if err := json.Unmarshal(buffer.Bytes(), auditTrailList); err != nil {
 		return nil, err
 	}
